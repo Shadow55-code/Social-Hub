@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - SocialHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .notifications-header {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .notifications-header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+        
+        .notification:hover {
+            transform: translateY(-2px);
+        }
+        
+        .notification.unread {
+            border-left-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notification-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .notification-message {
+            color: #555;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+        
+        .notification-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .notification-actions a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #667eea;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-actions a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .no-notifications {
+            background: white;
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .no-notifications p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>SocialHub</h1>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('create_post') }}">Create Post</a>
+            <a href="{{ url_for('notifications') }}">Notifications</a>
+            <a href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <a href="{{ url_for('home') }}" class="back-link">← Back to Home</a>
+        
+        <div class="notifications-header">
+            <h1>Notifications</h1>
+            <p>Stay updated with the latest activity</p>
+        </div>
+        
+        {% if notifications %}
+            {% for notification in notifications %}
+                <div class="notification {% if not notification.is_read %}unread{% endif %}">
+                    <div class="notification-header">
+                        <span class="notification-time">{{ notification.id }}</span>
+                        {% if not notification.is_read %}
+                            <a href="{{ url_for('mark_as_read', id=notification.id) }}" class="notification-actions">Mark as Read</a>
+                        {% endif %}
+                    </div>
+                    <p class="notification-message">{{ notification.message }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-notifications">
+                <p>No notifications yet.</p>
+                <p>When other users interact with your content, you'll see notifications here.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html> 

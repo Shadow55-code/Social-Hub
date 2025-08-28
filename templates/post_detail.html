@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} - SocialHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .post {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .post-author {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .post-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .post-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .post-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .comments-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .comments-section h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .comment {
+            border-bottom: 1px solid #e1e5e9;
+            padding: 1rem 0;
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .comment-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .comment-content {
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>SocialHub</h1>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('create_post') }}">Create Post</a>
+            <a href="{{ url_for('notifications') }}">Notifications</a>
+            <a href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <a href="{{ url_for('home') }}" class="back-link">← Back to Home</a>
+        
+        <div class="post">
+            <div class="post-header">
+                <span class="post-author">{{ post.author.username }}</span>
+                <span class="post-time">{{ post.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</span>
+            </div>
+            <h1 class="post-title">{{ post.title }}</h1>
+            <p class="post-content">{{ post.content }}</p>
+        </div>
+        
+        <div class="comments-section">
+            <h2>Comments</h2>
+            
+            <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}" class="comment-form">
+                <textarea name="content" placeholder="Write a comment..." required></textarea>
+                <button type="submit" class="btn">Add Comment</button>
+            </form>
+            
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="comment">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.author.username }}</span>
+                            <span class="comment-time">{{ comment.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                        </div>
+                        <p class="comment-content">{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 
